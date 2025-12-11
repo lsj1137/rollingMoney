@@ -15,12 +15,12 @@ public class StockDAO {
 	static final String SQL_SELECT_KOR_STOCKS = """
 select *
 from stocks join products using (product_id)
-where product_id>7763
+where category='us'
 """;
 	static final String SQL_SELECT_US_STOCKS = """
 select *
 from stocks join products using (product_id)
-where product_id<7764
+where category='kor'
 """;
 	static final String SQL_SELECT_WITH_NAME = """
 select *
@@ -37,7 +37,25 @@ select *
 from stocks join products using (product_id)
 where product_id = ?
 """;
-	
+	static final String SQL_COUNT_IN_CATEGORY = """
+SELECT COUNT(*) FROM Stocks 
+WHERE category = ?  -- subCategory에 따라 'KOR' 또는 'US' 조건 적용
+""";
+	static final String SQL_SELECT_STOCK_WITH_PAGE = """
+SELECT 
+    T.PRODUCT_ID, T.TICKER, T.ST_CUR_PRICE, T.ST_ABRV_NAME, T.ST_ENG_NAME, T.CATEGORY,
+    T.PRODUCT_TYPE, T.PRODUCT_NAME  -- ⭐ Products 테이블에서 가져온 컬럼 추가
+FROM (
+    SELECT
+        S.PRODUCT_ID, S.TICKER, S.ST_CUR_PRICE, S.ST_ABRV_NAME, S.ST_ENG_NAME, S.CATEGORY,
+        P.PRODUCT_TYPE, P.PRODUCT_NAME  --  P.별칭을 사용하여 컬럼 명시
+    FROM Stocks S 
+    JOIN Products P ON S.PRODUCT_ID = P.PRODUCT_ID  --  조인 구문 추가
+    WHERE S.CATEGORY = ?
+) T
+OFFSET ? ROWS           
+FETCH NEXT ? ROWS ONLY
+""";
 	private StockDTO makeStock(ResultSet rs) throws SQLException {
 		StockDTO stock = new StockDTO();
 		stock.setProductId(rs.getLong("Product_id"));
@@ -303,6 +321,53 @@ where product_id = ?
             DBUtil.dbDisconnect(conn, pstmt, rs);
         }
 		return stockList;
+	}
+
+	public List<StockDTO> selectStockListWithPaging(String subCategory, int startRow, int pageSize) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+		List<StockDTO> stockList = new ArrayList<>();
+
+        try {
+            conn = DBUtil.dbConnect();
+            pstmt = conn.prepareStatement(SQL_SELECT_STOCK_WITH_PAGE);
+            pstmt.setString(1, subCategory);
+            pstmt.setInt(2, startRow);
+            pstmt.setInt(3, pageSize);
+            rs = pstmt.executeQuery();
+			while (rs.next()) {
+				StockDTO newStock = makeStock(rs);
+				stockList.add(newStock);
+			}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.dbDisconnect(conn, pstmt, rs);
+        }
+		return stockList;
+	}
+
+	public int countTotalStocks(String subCategory) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int result = 0;
+
+        try {
+            conn = DBUtil.dbConnect();
+            pstmt = conn.prepareStatement(SQL_COUNT_IN_CATEGORY);
+            pstmt.setString(1, subCategory);
+            rs = pstmt.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.dbDisconnect(conn, pstmt, rs);
+        }
+		return result;
 	}
 
 }
