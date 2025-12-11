@@ -109,7 +109,21 @@ public class StockService {
 		return updatedList;
 	}
 	
+	public List<StockDTO> getStockListWithPaging(String subCategory, int currentPage, int pageSize) {
+	    int startRow = (currentPage - 1) * pageSize;
+	    
+	    return stockDAO.selectStockListWithPaging(subCategory, startRow, pageSize);
+	}
+
+	public int getTotalStockCount(String subCategory) {
+	    // 전체 데이터 개수 카운트 DAO 호출
+	    return stockDAO.countTotalStocks(subCategory);
+	}
+	
 	public void shutdownExecutor() {
         executorService.shutdown();
     }
+
+
+	
 }
