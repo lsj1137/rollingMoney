@@ -8,7 +8,7 @@
     <%-- 1. 헤더 (메타태그, CSS 연결) --%>
     <jsp:include page="header.jsp" />
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="bg-white flex flex-col min-h-screen">
 
     <%-- 2. 네비게이션 및 메인 콘텐츠 영역 --%>
     <div class="flex-grow container mx-auto p-4 sm:px-6 lg:px-8">
@@ -30,4 +30,11 @@
     <jsp:include page="footer.jsp" />
     
 </body>
+<script>
+let alertMsg = "${alertMsg}";
+if (alertMsg) {
+	alert(alertMsg);
+	alertMsg = null;
+}
+</script>
 </html>
