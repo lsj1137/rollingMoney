@@ -33,33 +33,39 @@ public class PaginationVO {
      */
     private void calcPagination() {
         
-        // 1. 전체 페이지 수 계산
+        // 전체 페이지 수 계산
         // totalCount / pageSize 를 올림 처리합니다.
-        // 예: 100개 / 9개 = 11.11 -> 12페이지
         this.totalPage = (int) Math.ceil((double) this.totalCount / this.pageSize);
-
-        // 2. 현재 페이지 블록의 끝 페이지 번호 계산
-        // currentPage를 pageBlock으로 나눈 후 올림하고 pageBlock을 다시 곱합니다.
-        // 예: currentPage=15, pageBlock=10 -> ceil(1.5) * 10 = 20
-        this.endPage = (int) (Math.ceil((double) this.currentPage / this.pageBlock) * this.pageBlock);
         
-        // 3. 현재 페이지 블록의 시작 페이지 번호 계산
-        // endPage에서 pageBlock - 1을 뺍니다.
-        // 예: endPage=20, pageBlock=10 -> 20 - 9 = 11
-        this.startPage = this.endPage - this.pageBlock + 1;
+        // 새로운 슬라이딩 윈도우 시작/끝 페이지 계산
+        final int displayRange = 2;
         
+        // 시작 페이지 계산: Math.max(1, 현재 페이지 - 3)
+        // 윈도우의 시작은 1보다 작아질 수 없습니다.
+        this.startPage = Math.max(1, this.currentPage - displayRange);
+        
+        // 끝 페이지 계산: Math.min(전체 페이지, 현재 페이지 + 3)
+        // 윈도우의 끝은 totalPage를 넘어갈 수 없습니다.
+        this.endPage = Math.min(this.totalPage, this.currentPage + displayRange);
+        
+        // 윈도우 크기 고정 조정
+        // 만약 시작/끝에서 윈도우 크기가 줄어들면, 반대쪽을 늘려 윈도우 크기를 7개로 유지
+        if (this.endPage - this.startPage < 2 * displayRange) {
+            if (this.startPage == 1 && this.totalPage > this.endPage) {
+                // 시작이 1이지만 전체 페이지가 더 남은 경우, 끝 페이지를 최대 7개까지 확장
+                this.endPage = Math.min(this.totalPage, this.startPage + 2 * displayRange);
+            } else if (this.endPage == this.totalPage && this.startPage > 1) {
+                // 끝이 totalPage이지만 시작 페이지가 1보다 큰 경우, 시작 페이지를 최소 7개까지 확장
+                this.startPage = Math.max(1, this.endPage - 2 * displayRange);
+            }
+        }
         // 4. endPage가 실제 totalPage보다 큰 경우 조정
         if (this.endPage > this.totalPage) {
             this.endPage = this.totalPage;
         }
 
-        // 5. 이전 버튼 (prev) 활성화 여부
-        // startPage가 1보다 크면 '이전' 블록이 존재합니다.
-        this.prev = this.startPage > 1;
-
-        // 6. 다음 버튼 (next) 활성화 여부
-        // endPage가 totalPage보다 작으면 '다음' 블록이 존재합니다.
-        this.next = this.endPage < this.totalPage;
+        this.prev = this.currentPage > 1; 
+        this.next = this.currentPage < this.totalPage;
     }
 
     // --- 4. Getter 및 Setter (필수) ---

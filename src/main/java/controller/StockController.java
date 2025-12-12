@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -13,16 +14,11 @@ import dto.PaginationVO;
 import dto.StockDTO;
 import service.StockService;
 
-/**
- * Servlet implementation class StockController
- */
+
 @WebServlet("/stock/*")
 public class StockController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String pathInfo = request.getPathInfo();
 		String contentPage = "";
@@ -34,17 +30,23 @@ public class StockController extends HttpServlet {
             contentPage = "/WEB-INF/views/stock/list.jsp";
             
         } else if (pathInfo.equals("/list/us")) {
-    	    String pageParam = request.getParameter("page");
-			request.setAttribute("stocklist", new StockService().getUSStocks());
+			List<StockDTO> stockList = getStockList("us", request);
+			request.setAttribute("stocklist", stockList);
 			request.setAttribute("category", "us");
             contentPage = "/WEB-INF/views/stock/list.jsp";
             
+        } else if (pathInfo.equals("/search")) {
+            contentPage = "/WEB-INF/views/stock/search.jsp";
+    	    String query = request.getParameter("query");
+    	    String criteria = request.getParameter("criteria");
+    	    List<StockDTO> stockList = getSearchResult(criteria, query);
+    	    if (stockList!=null) {
+    	    	request.setAttribute("searchResults", stockList);
+    	    }
         } else if (pathInfo.equals("/buy")) {
-            // GET /stock/buy 요청 처리 (매수 폼 보여주기)
             contentPage = "/WEB-INF/views/stock/buy.jsp";
             
         } else if (pathInfo.equals("/detail")) {
-            // GET /stock/detail?ticker=XXX 요청 처리
             contentPage = "/WEB-INF/views/stock/detail.jsp";
             
         } else {
@@ -58,9 +60,7 @@ public class StockController extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		doGet(request, response);
@@ -71,22 +71,38 @@ public class StockController extends HttpServlet {
 		StockService stockService = new StockService();
 		// 페이지네이션 변수 처리
 	    int currentPage = 1; // 현재 페이지 번호
-	    final int pageSize = 9; // 한 페이지당 아이템 수 (카드 9개)
+	    final int pageSize = 15; // 한 페이지당 아이템 수
 	    
 	    String pageParam = request.getParameter("page");
-	    
 	    if (pageParam != null) {
 	        try {
 	            currentPage = Integer.parseInt(pageParam);
 	            if (currentPage < 1) currentPage = 1;
 	        } catch (NumberFormatException e) {
-	            // 잘못된 입력 시 기본값 유지
+	        	e.printStackTrace();
 	        }
 	    }
+	    System.out.println("START SQL>> "+LocalDateTime.now());
 	    List<StockDTO> stockList = stockService.getStockListWithPaging(subCategory, currentPage, pageSize);
+	    System.out.println("END list SQL>> "+LocalDateTime.now());
 	    int totalCount = stockService.getTotalStockCount(subCategory);
+	    System.out.println("END count SQL>> "+LocalDateTime.now());
 	    PaginationVO pagination = new PaginationVO(currentPage, pageSize, totalCount); 
+	    System.out.println(subCategory+" total: "+totalCount+" / currentPage: "+currentPage);
 	    request.setAttribute("pagination", pagination);
 		return stockList;
+	}
+	
+	protected List<StockDTO> getSearchResult(String criteria, String query) {
+		StockService stockService = new StockService();
+		List<StockDTO> stockList = null;
+		if (query==null || query.trim().isEmpty()) return null;
+		if (criteria.equals("name")) {
+			stockList = stockService.findByName(query);
+		} else {
+			stockList = stockService.findByTicker(query);
+		}
+		return stockList;
+		
 	}
 }

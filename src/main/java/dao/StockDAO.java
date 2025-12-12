@@ -43,8 +43,7 @@ WHERE category = ?  -- subCategory에 따라 'KOR' 또는 'US' 조건 적용
 """;
 	static final String SQL_SELECT_STOCK_WITH_PAGE = """
 SELECT 
-    T.PRODUCT_ID, T.TICKER, T.ST_CUR_PRICE, T.ST_ABRV_NAME, T.ST_ENG_NAME, T.CATEGORY,
-    T.PRODUCT_TYPE, T.PRODUCT_NAME  -- ⭐ Products 테이블에서 가져온 컬럼 추가
+    *
 FROM (
     SELECT
         S.PRODUCT_ID, S.TICKER, S.ST_CUR_PRICE, S.ST_ABRV_NAME, S.ST_ENG_NAME, S.CATEGORY,
@@ -65,6 +64,7 @@ FETCH NEXT ? ROWS ONLY
 		stock.setTicker(rs.getString("ticker"));
 		stock.setAbrvName(rs.getString("st_abrv_name"));
 		stock.setEngName(rs.getString("st_eng_name"));
+		stock.setCategory(rs.getString("category"));
 		return stock;
 	}
 	
