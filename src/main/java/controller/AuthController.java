@@ -22,17 +22,22 @@ public class AuthController extends HttpServlet {
             throws ServletException, IOException {
         
         String action = request.getParameter("action");
+    	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
         String contentPath = "";
         
         if (action == null || action.equals("showLogin")) {
-            // 기본 또는 showLogin 요청 시 로그인 페이지로 이동
-        	contentPath = "/WEB-INF/views/auth/login.jsp";
+        	if (member == null) {
+                // 기본 또는 showLogin 요청 시 로그인 페이지로 이동
+            	contentPath = "/WEB-INF/views/auth/login.jsp";
+        	} else {
+        		contentPath = "/WEB-INF/views/index.jsp";
+        	}
         } else if (action.equals("showRegister")) {
             // 회원가입 페이지 요청 시
         	contentPath = "/WEB-INF/views/auth/register.jsp";
         } else if (action.equals("logout")) {
-            request.getSession().setAttribute("memberId", null);
-        	contentPath = "/WEB-INF/views/auth/login.jsp";
+            request.getSession().setAttribute("member", null);
+        	contentPath = "/WEB-INF/views/index.jsp";
         }
 
         request.setAttribute("contentPage", contentPath);
@@ -57,7 +62,8 @@ public class AuthController extends HttpServlet {
             
             if (member != null/* member가 null이 아닌 경우 */) {
                 // 로그인 성공: 세션에 사용자 정보 저장
-                 request.getSession().setAttribute("memberId", member.getMemberId());
+                 request.getSession().setAttribute("member", member);
+                 contentPath = "/WEB-INF/views/index.jsp"; 
             } else {
                 // 로그인 실패: 에러 메시지를 JSP로 전달
                 request.setAttribute("errorMsg", "이메일 또는 비밀번호가 올바르지 않습니다.");
