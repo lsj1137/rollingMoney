@@ -9,9 +9,18 @@
     <jsp:include page="header.jsp" />
 </head>
 <body class="bg-white flex flex-col min-h-screen">
-
-    <%-- 2. 네비게이션 및 메인 콘텐츠 영역 --%>
-    <div class="flex-grow container mx-auto p-4 sm:px-6 lg:px-8">
+	
+	<c:set var="isIndexPage" value="${contentPage eq '/WEB-INF/views/index.jsp'}" />
+    <c:choose>
+  	<c:when test="${isIndexPage}">
+  		<c:set var="contentClasses" value="flex-grow" />
+  	</c:when>
+  	<c:otherwise>
+  		<c:set var="contentClasses" value="flex-grow container mx-auto sm:px-6 lg:px-8" />
+  	</c:otherwise>
+  	</c:choose>
+    <%-- 네비게이션 및 메인 콘텐츠 영역 --%>
+    <div class="${contentClasses}">
         <%-- **서블릿이 지정한 실제 컨텐츠 뷰 포함** --%>
         <c:choose>
             <c:when test="${not empty contentPage}">
