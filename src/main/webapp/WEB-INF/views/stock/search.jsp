@@ -14,7 +14,7 @@
             
             <div class="relative">
                 <select name="criteria" id="search-criteria" 
-                        class="block appearance-none bg-gray-50 border-r border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-l-full focus:outline-none h-full">
+                        class="block appearance-none bg-gray-50 border-r border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded-l-[8px] focus:outline-none h-full">
                     <option value="name" <c:if test="${param.criteria eq 'name'}">selected</c:if>>이름</option>
                     <option value="ticker" <c:if test="${param.criteria eq 'ticker'}">selected</c:if>>티커</option>
                 </select>
@@ -25,7 +25,7 @@
 
             <input type="search" name="query" placeholder="주식 종목을 입력하세요 (예: 삼성전자, GOOG)" 
                    value="${param.query}"
-                   class="flex-grow p-4 text-gray-700 focus:outline-none rounded-r-full"
+                   class="flex-grow p-4 text-gray-700 focus:outline-none rounded-r-[8px]"
                    required>
             
             <button type="submit" 
@@ -51,7 +51,7 @@
                             <div class="bg-white rounded-xl shadow-custom hover:shadow-custom-hover transition duration-100 p-6 flex flex-col justify-between">
                                 <div class="mb-4">
                                     <h3 class="text-xl font-bold text-gray-900 truncate">
-                                        <a href="${path}/stock/detail?ticker=${stock.ticker}" class="hover:text-blue-600">
+                                        <a href="${path}/stock/detail?id=${stock.productId}" class="hover:text-blue-600">
                                             ${stock.abrvName}
                                         </a>
                                     </h3>
@@ -63,9 +63,9 @@
                                         <fmt:formatNumber value="${stock.curPrice}" pattern="#,###.##"/>
                                         ${stock.category eq 'us' ? '$' : '원'}
                                     </div>
-                                    <a href="${path}/stock/buy?ticker=${stock.ticker}" 
+                                    <a href="${path}/stock/trade?id=${stock.productId}" 
                                        class="text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-[8px] text-sm font-medium shadow-md transition duration-150">
-                                        매수
+                                        거래
                                     </a>
                                 </div>
                             </div>

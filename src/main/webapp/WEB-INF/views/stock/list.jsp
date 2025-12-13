@@ -5,7 +5,7 @@
 <c:set var="path" value="${pageContext.request.contextPath}" />
 
 <div class="container mx-auto p-4 md:p-6">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 border-b border-gray-500 pb-2">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6 pb-2">
         주식 시장 목록
     </h2>
 
@@ -38,21 +38,21 @@
 	                    <div class="bg-white rounded-xl shadow-custom hover:shadow-custom-hover transition-all duration-100 p-6 flex flex-col justify-between">
 	                        <div class="mb-4">
 	                            <h3 class="text-xl font-bold text-gray-900 truncate">
-	                                <a href="${path}/stock/detail?ticker=${stock.ticker}" class="hover:text-blue-600">
+	                                <a href="${path}/stock/detail?id=${stock.productId}" class="hover:text-blue-600">
 	                                    ${stock.abrvName}
 	                                </a>
 	                            </h3>
 	                            <p class="text-sm text-gray-500">${stock.ticker}</p>
 	                        </div>
 	
-	                        <div class="flex items-end justify-between border-t border-gray-400 pt-4">
+	                        <div class="flex items-end justify-between pt-2">
 	                            <div>
                                     <fmt:formatNumber value="${stock.curPrice}" pattern="#,###.##"/>
                                     ${category eq 'us' ? '$' : '원'}
 	                            </div>
-	                            <a href="${path}/stock/buy?ticker=${stock.ticker}" 
+	                            <a href="${path}/stock/trade?id=${stock.productId}" 
 	                               class="text-white bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded-[8px] text-sm font-medium shadow-md transition duration-150">
-	                                매수
+	                                거래
 	                            </a>
 	                        </div>
 	                    </div>
@@ -70,14 +70,14 @@
 <%-- /WEB-INF/views/stock/list.jsp 의 페이지네이션 영역 --%>
 
 	<div class="mt-10 flex w-full items-center justify-center">
-	    <div class="flex space-x-2"> 
+	    <div class="flex space-x-0"> 
 	        
 	        <%-- 맨 처음 버튼 --%>
 	        <c:if test="${pagination.currentPage > 4}">
 	            <c:url var="firstPageUrl" value="/stock/list/${category}">
 	                <c:param name="page" value="1" />
 	            </c:url>
-	            <a href="${firstPageUrl}" class="relative inline-flex items-center justify-center w-[56px] px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-100 rounded-l-md">
+	            <a href="${firstPageUrl}" class="relative inline-flex items-center justify-center w-[56px] px-2 py-2 shadow-page  bg-white text-sm font-medium text-gray-500 hover:bg-blue-100 rounded-l-md">
 	                &lt;&lt;
 	            </a>
 	        </c:if>
@@ -87,7 +87,7 @@
 	            <c:url var="prev100Url" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.currentPage - 100}" /> 
 	            </c:url>
-	            <a href="${prev100Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
+	            <a href="${prev100Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 shadow-page bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
 	                ${pagination.currentPage - 100}
 	            </a>
 	        </c:if>
@@ -97,7 +97,7 @@
 	            <c:url var="prev10Url" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.currentPage - 10}" /> 
 	            </c:url>
-	            <a href="${prev10Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
+	            <a href="${prev10Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 shadow-page bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
 	                ${pagination.currentPage - 10}
 	            </a>
 	        </c:if>
@@ -107,7 +107,7 @@
 	            <c:url var="prevBlockUrl" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.startPage - 1}" /> 
 	            </c:url>
-	            <a href="${prevBlockUrl}" class="relative inline-flex items-center justify-center w-[56px] px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-blue-100">
+	            <a href="${prevBlockUrl}" class="relative inline-flex items-center justify-center w-[56px] px-4 py-2 shadow-page bg-white text-sm font-medium text-gray-700 hover:bg-blue-100">
 	                &lt;
 	            </a>
 	        </c:if>
@@ -119,7 +119,7 @@
 	            </c:url>
 	            
 	            <a href="${pageUrl}" 
-	               class="relative inline-flex items-center justify-center w-[56px] px-4 py-2 border text-sm font-medium
+	               class="relative inline-flex items-center justify-center w-[56px] px-4 py-2 shadow-page text-sm font-medium
 	               <c:choose>
 	                   <c:when test='${pageNum == pagination.currentPage}'>bg-blue-600 border-blue-600 text-white z-10</c:when>
 	                   <c:otherwise>bg-white border-gray-300 text-gray-700 hover:bg-blue-100</c:otherwise>
@@ -134,7 +134,7 @@
 	            <c:url var="nextBlockUrl" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.endPage + 1}" /> 
 	            </c:url>
-	            <a href="${nextBlockUrl}" class="relative inline-flex items-center justify-center w-[56px] px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-blue-100">
+	            <a href="${nextBlockUrl}" class="relative inline-flex items-center justify-center w-[56px] px-4 py-2 shadow-page bg-white text-sm font-medium text-gray-700 hover:bg-blue-100">
 	                &gt;
 	            </a>
 	        </c:if>
@@ -144,7 +144,7 @@
 	            <c:url var="next10Url" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.currentPage + 10}" />
 	            </c:url>
-	            <a href="${next10Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
+	            <a href="${next10Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 shadow-page bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
 	                ${pagination.currentPage + 10}
 	            </a>
 	        </c:if>
@@ -154,7 +154,7 @@
 	            <c:url var="next100Url" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.currentPage + 100}" />
 	            </c:url>
-	            <a href="${next100Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
+	            <a href="${next100Url}" class="relative inline-flex items-center justify-center w-[56px] px-3 py-2 shadow-page bg-white text-sm font-medium text-gray-500 hover:bg-blue-100">
 	                ${pagination.currentPage + 100}
 	            </a>
 	        </c:if>
@@ -164,7 +164,7 @@
 	            <c:url var="lastPageUrl" value="/stock/list/${category}">
 	                <c:param name="page" value="${pagination.totalPage}" />
 	            </c:url>
-	            <a href="${lastPageUrl}" class="relative inline-flex items-center justify-center w-[56px] px-2 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-blue-100 rounded-r-md">
+	            <a href="${lastPageUrl}" class="relative inline-flex items-center justify-center w-[56px] px-2 py-2 shadow-page bg-white text-sm font-medium text-gray-500 hover:bg-blue-100 rounded-r-md">
 	                &gt;&gt;
 	            </a>
 	        </c:if>
