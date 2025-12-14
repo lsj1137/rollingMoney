@@ -21,7 +21,7 @@ public class StockService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 	
 	// KIS API를 통해 현재가를 조회하고, DB에 저장(혹은 갱신)하는 메서드
-    public StockDTO registerStockWithKis(String ticker, String stockName) {
+    public StockDTO registerStockWithKis(String ticker, String stockName, String category) {
     	StockDTO updatedStock = null;
         try {
             // API(한국투자증권)로 현재가 가져오기
@@ -34,7 +34,7 @@ public class StockService {
             }
 
             // API에서는 약어명, 영문명을 안 주므로 일단 한글명, null로 채움
-            StockDTO stockDTO = new StockDTO(stockName, ticker, currentPrice, stockName, null);
+            StockDTO stockDTO = new StockDTO(stockName, ticker, currentPrice, stockName, null, category);
 
             // DAO 내부에서 (있으면 UPDATE, 없으면 INSERT) 로직이 돕니다.
             stockDAO.saveOrUpdate(stockDTO);
@@ -57,7 +57,7 @@ public class StockService {
 	
 	public StockDTO findById(long id) {
 		StockDTO stockDTO = stockDAO.findById(id);
-		StockDTO updatedStock = registerStockWithKis(stockDTO.getTicker(), stockDTO.getProductName());
+		StockDTO updatedStock = registerStockWithKis(stockDTO.getTicker(), stockDTO.getProductName(), stockDTO.getCategory());
 		if (updatedStock != null) {
 			stockDTO.setCurPrice(updatedStock.getCurPrice());
 		}
@@ -91,7 +91,7 @@ public class StockService {
 		List<StockDTO> updatedList = new ArrayList<StockDTO>();
 		for (StockDTO stock: stockList) {
 			tasks.add(() -> { 
-				StockDTO updatedStock = registerStockWithKis(stock.getTicker(), stock.getProductName());
+				StockDTO updatedStock = registerStockWithKis(stock.getTicker(), stock.getProductName(), stock.getCategory());
 				if (updatedStock != null) {
 					stock.setCurPrice(updatedStock.getCurPrice());
 				}

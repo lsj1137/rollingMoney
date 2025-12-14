@@ -35,7 +35,7 @@ public class DataInitService {
 
                 // DTO 생성 (약어명, 영문명은 없으면 이름으로 대체하거나 빈칸)
                 BigDecimal price = new BigDecimal(priceStr);
-                StockDTO dto = new StockDTO(name, ticker, price, name, null);
+                StockDTO dto = new StockDTO(name, ticker, price, name, null, "kor");
 
                 // 저장 (기존에 있으면 가격 업데이트, 없으면 생성)
                 stockDAO.saveOrUpdate(dto);
@@ -67,7 +67,7 @@ public class DataInitService {
 
                 BigDecimal price = new BigDecimal(priceStr);
                 // 해외주식은 영문명도 같이 저장
-                StockDTO dto = new StockDTO(name, ticker, price, name, engName);
+                StockDTO dto = new StockDTO(name, ticker, price, name, engName, "us");
 
                 stockDAO.saveOrUpdate(dto);
                 successCount++;

@@ -16,12 +16,13 @@ public class StockDTO extends ProductDTO {
 	private String ticker;
 	private String abrvName;
 	private String engName;
+	private String category;
 	
 	public StockDTO() {
 		super(null, "STOCK", null);
 	}
 	
-	public StockDTO(String productName, String ticker, BigDecimal curPrice, String abrvName, String engName) {
+	public StockDTO(String productName, String ticker, BigDecimal curPrice, String abrvName, String engName, String category) {
 		// 부모 생성자 호출 (ID는 null, 타입은 "STOCK" 고정, 이름은 받아서 넘김)
         super(null, "STOCK", productName);
         
@@ -30,5 +31,6 @@ public class StockDTO extends ProductDTO {
         this.curPrice = curPrice;
         this.abrvName = abrvName;
         this.engName = engName;
+        this.category = category;
 	}
 }
