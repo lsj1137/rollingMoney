@@ -79,7 +79,6 @@
 
             <div x-show="currentTab === 'buy'" class="space-y-6">
                 <form action="${path}/stock/buy" method="post" id="buyForm">
-                    <input type="hidden" name="ticker" value="${stock.ticker}">
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -112,7 +111,6 @@
 
             <div x-show="currentTab === 'sell'" class="space-y-6">
                 <form action="${path}/stock/sell" method="post" id="sellForm">
-                    <input type="hidden" name="ticker" value="${stock.ticker}">
                     
                     <div class="grid grid-cols-2 gap-4">
                         <div>
