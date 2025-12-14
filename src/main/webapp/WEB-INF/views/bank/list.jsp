@@ -13,7 +13,7 @@
         </h1>
         
         <h2 class="text-2xl font-semibold text-yellow-600 mb-4">
-            은행/계좌 기능은 현재 공사 중입니다.
+            은행 상품 조회 기능은 현재 공사 중입니다.
         </h2>
         
         <p class="text-gray-600 mb-8">
@@ -22,7 +22,7 @@
         </p>
         
         <a href="${path}/" 
-           class="inline-flex items-center justify-center px-6 py-3 bg-indigo-600 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300 transform hover:-translate-y-0.5">
+           class="inline-flex items-center justify-center px-6 py-3 bg-blue-500 text-white font-bold rounded-lg shadow-md hover:bg-indigo-700 transition-colors duration-300 transform hover:-translate-y-0.5">
             <i class="fa-solid fa-home mr-2"></i> 홈으로 돌아가기
         </a>
     </div>
