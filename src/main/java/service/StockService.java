@@ -21,11 +21,11 @@ public class StockService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(10);
 	
 	// KIS API를 통해 현재가를 조회하고, DB에 저장(혹은 갱신)하는 메서드
-    public StockDTO registerStockWithKis(String ticker, String stockName, String category) {
+    public StockDTO registerStockWithKis(String token, String ticker, String stockName, String category) {
     	StockDTO updatedStock = null;
         try {
             // API(한국투자증권)로 현재가 가져오기
-            BigDecimal currentPrice = kisApiManager.getStockPrice(ticker);
+            BigDecimal currentPrice = kisApiManager.getStockPrice(token, ticker);
 
             // 가격을 못 가져왔으면(0원 or null) 중단
             if (currentPrice == null || currentPrice.compareTo(BigDecimal.ZERO) <= 0) {
@@ -57,7 +57,8 @@ public class StockService {
 	
 	public StockDTO findById(long id) {
 		StockDTO stockDTO = stockDAO.findById(id);
-		StockDTO updatedStock = registerStockWithKis(stockDTO.getTicker(), stockDTO.getProductName(), stockDTO.getCategory());
+    	String token = kisApiManager.getAccessToken();
+		StockDTO updatedStock = registerStockWithKis(token, stockDTO.getTicker(), stockDTO.getProductName(), stockDTO.getCategory());
 		if (updatedStock != null) {
 			stockDTO.setCurPrice(updatedStock.getCurPrice());
 		}
@@ -78,20 +79,14 @@ public class StockService {
 		return updatedList;
 	}
 
-	public List<StockDTO> getPersonalStocks(List<HoldingDTO> holdingStockList) {
-		List<StockDTO> stocks = new ArrayList<StockDTO>();
-		for (HoldingDTO holding: holdingStockList) {
-			stocks.add(stockDAO.findById(holding.getProductId()));
-		}
-		return stocks;
-	}
 	
 	public List<StockDTO> updateCurPrice(List<StockDTO> stockList) {
 		List<Callable<StockDTO>> tasks = new ArrayList<>();
 		List<StockDTO> updatedList = new ArrayList<StockDTO>();
 		for (StockDTO stock: stockList) {
+	    	String token = kisApiManager.getAccessToken();
 			tasks.add(() -> { 
-				StockDTO updatedStock = registerStockWithKis(stock.getTicker(), stock.getProductName(), stock.getCategory());
+				StockDTO updatedStock = registerStockWithKis(token, stock.getTicker(), stock.getProductName(), stock.getCategory());
 				if (updatedStock != null) {
 					stock.setCurPrice(updatedStock.getCurPrice());
 				}
@@ -111,8 +106,9 @@ public class StockService {
 	
 	public List<StockDTO> getStockListWithPaging(String subCategory, int currentPage, int pageSize) {
 	    int startRow = (currentPage - 1) * pageSize;
-	    
-	    return stockDAO.selectStockListWithPaging(subCategory, startRow, pageSize);
+		List<StockDTO> stockList = stockDAO.selectStockListWithPaging(subCategory, startRow, pageSize);
+		List<StockDTO> updatedList = updateCurPrice(stockList);
+	    return updatedList;
 	}
 
 	public int getTotalStockCount(String subCategory) {

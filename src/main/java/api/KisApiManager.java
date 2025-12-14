@@ -37,7 +37,7 @@ public class KisApiManager {
 		}
     }
 	
-	private String getAccessToken() {
+	public String getAccessToken() {
         // 메모리에 있으면 그거 씀
         if (this.accessToken != null) {
             return this.accessToken;
@@ -112,8 +112,7 @@ public class KisApiManager {
     }
 
     // 주식 현재가 조회 (국내주식)
-    public BigDecimal getStockPrice(String ticker) {
-    	String token = getAccessToken();
+    public BigDecimal getStockPrice(String token, String ticker) {
     	if (token == null) return BigDecimal.ZERO;
 
         try {

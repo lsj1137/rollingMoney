@@ -133,13 +133,9 @@ public class StockController extends HttpServlet {
 	        	e.printStackTrace();
 	        }
 	    }
-	    System.out.println("START SQL>> "+LocalDateTime.now());
 	    List<StockDTO> stockList = stockService.getStockListWithPaging(subCategory, currentPage, pageSize);
-	    System.out.println("END list SQL>> "+LocalDateTime.now());
 	    int totalCount = stockService.getTotalStockCount(subCategory);
-	    System.out.println("END count SQL>> "+LocalDateTime.now());
 	    PaginationVO pagination = new PaginationVO(currentPage, pageSize, totalCount); 
-	    System.out.println(subCategory+" total: "+totalCount+" / currentPage: "+currentPage);
 	    request.setAttribute("pagination", pagination);
 		return stockList;
 	}
