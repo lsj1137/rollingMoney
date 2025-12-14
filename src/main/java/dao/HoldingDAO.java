@@ -19,7 +19,7 @@ import util.DBUtil;
 public class HoldingDAO {
 	static final String SQL_SELECT_WITH_ID = """
 select *
-from HOLDINGS
+from HOLDINGS join PRODUCTS using (product_id, product_type)
 where MEMBER_ID = ?
 """;
 	
@@ -73,6 +73,11 @@ where PRODUCT_ID = ?
 		HoldingDTO holding = new HoldingDTO();
 		holding.setHoldingId(rs.getLong("holding_id"));
 		holding.setProductId(rs.getLong("product_id"));
+		try {
+			holding.setProductName(rs.getString("product_name"));
+		} catch (SQLException e) {
+			holding.setProductName(null);
+		}
 		holding.setProductType(rs.getString("product_type"));
 		holding.setMemberId(rs.getLong("member_id"));
 		holding.setQuantity(rs.getInt("quantity"));

@@ -25,14 +25,14 @@ public class HistoryController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		String pathInfo = request.getPathInfo();
-        String contentPath = "/WEB-INF/views/history/history.jsp";
+        String contentPage = "/WEB-INF/views/history/history.jsp";
     	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
     	Gson gson = new Gson();
 		String historyListJson;
     	
     	if (member==null) {
         	request.setAttribute("alertMsg", "해당 메뉴는 회원만 이용 가능합니다. 로그인 후 이용하세요.");
-            contentPath = "/WEB-INF/views/auth/login.jsp";
+            contentPage = "/WEB-INF/views/auth/login.jsp";
     	} else {
             List<HistoryDTO> historyList = historyService.loadHistory(member);
             try {
@@ -48,7 +48,7 @@ public class HistoryController extends HttpServlet {
     	}
     	
         
-        request.setAttribute("contentPage", contentPath);
+        request.setAttribute("contentPage", contentPage);
         request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
 	}
 
