@@ -63,6 +63,12 @@ SET QUANTITY = ?, BUY_PRICE = ?, BUY_AMOUNT = ?
 WHERE HOLDING_ID = ?
 """;
 
+static final String SQL_SELECT_WITH_PID = """
+select *
+from HOLDINGS
+where PRODUCT_ID = ?
+""";
+
 	private HoldingDTO makeHolding(ResultSet rs) throws SQLException {
 		HoldingDTO holding = new HoldingDTO();
 		holding.setHoldingId(rs.getLong("holding_id"));
@@ -101,8 +107,8 @@ WHERE HOLDING_ID = ?
 	}
 	
 	
-	public String buyStock(MemberDTO member, StockDTO stock, int quantity) {
-		String message = null;
+	public int buyStock(MemberDTO member, StockDTO stock, int quantity) {
+		int resultCode = 0;
 
 		Connection conn = null;
         PreparedStatement pstmt = null;
@@ -118,8 +124,8 @@ WHERE HOLDING_ID = ?
 			conn.setAutoCommit(false);
 			
 			if (newCash.compareTo(BigDecimal.ZERO)<0) {
-				message = "잔고가 부족합니다.";
-				return message;
+				resultCode = -1;
+				return resultCode;
 			}
 			
 			// 기존 보유 주식 확인
@@ -181,7 +187,7 @@ WHERE HOLDING_ID = ?
 			if (result1>0 && result2>0) {
 				conn.commit();
 				member.setCash(newCash);
-				message = "\n✅ 매수 체결되었습니다.\n가격: "+stock.getCurPrice()+"\n수량: "+quantity+"\n총액: "+purchaseAmount;
+				resultCode = 1;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -190,12 +196,12 @@ WHERE HOLDING_ID = ?
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-			message = "\n❌ 매수에 실패했습니다";
+			resultCode = -2;
 		} finally {
 			DBUtil.dbDisconnect(conn, pstmt, null);
 		}
 		
-		return message;
+		return resultCode;
 	}
 
 
@@ -223,8 +229,8 @@ WHERE HOLDING_ID = ?
 	}
 	
 	
-	public String sellStock(MemberDTO member, StockDTO stock, HoldingDTO holding, int quantity) {
-		String message = null;
+	public int sellStock(MemberDTO member, StockDTO stock, HoldingDTO holding, int quantity) {
+		int resultCode = 0;
 
 		Connection conn = null;
         PreparedStatement updateStmt1 = null;
@@ -254,7 +260,7 @@ WHERE HOLDING_ID = ?
 			updateStmt2.setLong(2, member.getMemberId());
 			int result2 = updateStmt2.executeUpdate();
 			if (result1>0 && result2>0) {
-				message = "\n✅ 매도 체결되었습니다.\n가격: "+stock.getCurPrice()+"\n수량: "+quantity+"\n총액: "+amount;
+				resultCode = 1;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -263,7 +269,7 @@ WHERE HOLDING_ID = ?
 			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
-			message = "\n❌ 매도에 실패했습니다";
+			resultCode = -1;
 		} finally {
 			if (updateStmt2 != null)
 				try {
@@ -274,6 +280,28 @@ WHERE HOLDING_ID = ?
 			DBUtil.dbDisconnect(conn, updateStmt1, null);
 		}
 		
-		return message;
+		return resultCode;
+	}
+
+	public HoldingDTO getHoldingByPid(Long productId) {
+		Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+		HoldingDTO holdingDTO = null;
+
+        try {
+            conn = DBUtil.dbConnect();
+            pstmt = conn.prepareStatement(SQL_SELECT_WITH_PID);
+            pstmt.setLong(1, productId);
+            rs = pstmt.executeQuery();
+			while (rs.next()) {
+				holdingDTO = makeHolding(rs);
+			}
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.dbDisconnect(conn, pstmt, rs);
+        }
+		return holdingDTO;
 	}
 }

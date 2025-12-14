@@ -14,7 +14,7 @@ public class HoldingService {
 		return holdingDAO.getAllHoldings(loggedInMemberId);
 	}
 
-	public String buyStock(MemberDTO member, StockDTO stock, int quantity) {
+	public int buyStock(MemberDTO member, StockDTO stock, int quantity) {
 		return holdingDAO.buyStock(member, stock, quantity);
 	}
 
@@ -22,8 +22,12 @@ public class HoldingService {
 		return holdingDAO.getAllStocks(loggedInMemberId);
 	}
 
-	public String sellStock(MemberDTO member, StockDTO stockToSell, HoldingDTO holdingToSell, int quantity) {
+	public int sellStock(MemberDTO member, StockDTO stockToSell, HoldingDTO holdingToSell, int quantity) {
 		return holdingDAO.sellStock(member, stockToSell, holdingToSell, quantity);
+	}
+
+	public HoldingDTO getHoldingByPid(Long productId) {
+		return holdingDAO.getHoldingByPid(productId);
 	}
 	
 }
