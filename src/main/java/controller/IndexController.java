@@ -16,12 +16,12 @@ public class IndexController extends HttpServlet {
          throws ServletException, IOException {
      
      
-     String contentPath = "";       
+     String contentPage = "";       
 
-     contentPath = "/WEB-INF/views/index.jsp"; 
+     contentPage = "/WEB-INF/views/index.jsp"; 
      
      // 최종적으로 메인 레이아웃에 끼워 넣기
-     request.setAttribute("contentPage", contentPath);
+     request.setAttribute("contentPage", contentPage);
      request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
  }
 }

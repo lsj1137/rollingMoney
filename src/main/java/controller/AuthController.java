@@ -23,24 +23,24 @@ public class AuthController extends HttpServlet {
         
         String action = request.getParameter("action");
     	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
-        String contentPath = "";
+        String contentPage = "";
         
         if (action == null || action.equals("showLogin")) {
         	if (member == null) {
                 // 기본 또는 showLogin 요청 시 로그인 페이지로 이동
-            	contentPath = "/WEB-INF/views/auth/login.jsp";
+            	contentPage = "/WEB-INF/views/auth/login.jsp";
         	} else {
-        		contentPath = "/WEB-INF/views/index.jsp";
+        		contentPage = "/WEB-INF/views/index.jsp";
         	}
         } else if (action.equals("showRegister")) {
             // 회원가입 페이지 요청 시
-        	contentPath = "/WEB-INF/views/auth/register.jsp";
+        	contentPage = "/WEB-INF/views/auth/register.jsp";
         } else if (action.equals("logout")) {
             request.getSession().setAttribute("member", null);
-        	contentPath = "/WEB-INF/views/index.jsp";
+        	contentPage = "/WEB-INF/views/index.jsp";
         }
 
-        request.setAttribute("contentPage", contentPath);
+        request.setAttribute("contentPage", contentPage);
         request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
     }
 
@@ -50,7 +50,7 @@ public class AuthController extends HttpServlet {
     	request.setCharacterEncoding("utf-8");
         
         String action = request.getParameter("action");
-        String contentPath = "";
+        String contentPage = "";
         
         
         if (action.equals("login")) {
@@ -63,13 +63,13 @@ public class AuthController extends HttpServlet {
             if (member != null/* member가 null이 아닌 경우 */) {
                 // 로그인 성공: 세션에 사용자 정보 저장
                  request.getSession().setAttribute("member", member);
-                 contentPath = "/WEB-INF/views/index.jsp"; 
+                 contentPage = "/WEB-INF/views/index.jsp"; 
             } else {
                 // 로그인 실패: 에러 메시지를 JSP로 전달
                 request.setAttribute("errorMsg", "이메일 또는 비밀번호가 올바르지 않습니다.");
-                contentPath = "/WEB-INF/views/auth/login.jsp"; 
+                contentPage = "/WEB-INF/views/auth/login.jsp"; 
             }
-            request.setAttribute("contentPage", contentPath);
+            request.setAttribute("contentPage", contentPage);
             request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
             
         } else if (action.equals("register")) {
@@ -81,7 +81,7 @@ public class AuthController extends HttpServlet {
             System.out.println(name+ email+ password);
             Long result = new MemberService().register(name, email, password);
             String errorMsg = null;
-        	contentPath = "/WEB-INF/views/auth/register.jsp";
+        	contentPage = "/WEB-INF/views/auth/register.jsp";
             if (result==-1) {
             	errorMsg =  "이름은 필수 입력값입니다!";
                 request.setAttribute("errorMsg", errorMsg);
@@ -93,9 +93,9 @@ public class AuthController extends HttpServlet {
                 request.setAttribute("errorMsg", errorMsg);
             } else {
                 request.setAttribute("alertMsg", "회원가입이 완료되었습니다! 로그인하고 이용하세요.");
-            	contentPath = "/WEB-INF/views/auth/login.jsp";
+            	contentPage = "/WEB-INF/views/auth/login.jsp";
             }
-            request.setAttribute("contentPage", contentPath);
+            request.setAttribute("contentPage", contentPage);
             request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
         }
     }

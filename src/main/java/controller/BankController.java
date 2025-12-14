@@ -15,13 +15,13 @@ public class BankController extends HttpServlet {
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String pathInfo = request.getPathInfo();
-        String contentPath = "/WEB-INF/views/bank/list.jsp";
+        String contentPage = "/WEB-INF/views/bank/list.jsp";
         
 
 		if (pathInfo == null || pathInfo.equals("/list") || pathInfo.equals("/list/kor")) {
-			contentPath = "/WEB-INF/views/bank/list.jsp";
+			contentPage = "/WEB-INF/views/bank/list.jsp";
         } 
-        request.setAttribute("contentPage", contentPath);
+        request.setAttribute("contentPage", contentPage);
         request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
 	}
 	
