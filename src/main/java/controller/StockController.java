@@ -16,6 +16,7 @@ import dto.PaginationVO;
 import dto.StockDTO;
 import service.HistoryService;
 import service.HoldingService;
+import service.MemberService;
 import service.StockService;
 
 
@@ -52,7 +53,8 @@ public class StockController extends HttpServlet {
     	    }
         } else if (pathInfo.equals("/trade")) {
         	// 세션 확인: 로그인 여부 확인
-        	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
+        	Long memberId = (Long) request.getSession().getAttribute("memberId");
+        	MemberDTO member = new MemberService().refresh(memberId);
             if (member==null) {
             	request.setAttribute("alertMsg", "해당 메뉴는 회원만 이용 가능합니다. 로그인 후 이용하세요.");
             } else {
@@ -94,7 +96,8 @@ public class StockController extends HttpServlet {
 		String pathInfo = request.getPathInfo();
 		String contentPage = "";
 		System.out.println(pathInfo);
-    	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
+    	Long memberId = (Long) request.getSession().getAttribute("memberId");
+    	MemberDTO member = new MemberService().refresh(memberId);
     	StockDTO stock = (StockDTO) request.getSession().getAttribute("stock");
 		
 		if (pathInfo.equals("/buy")) {

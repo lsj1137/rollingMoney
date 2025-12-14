@@ -20,13 +20,13 @@ public class HoldingsController extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String contentPage = "/WEB-INF/views/holdings/holdings.jsp";
-    	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
+    	Long memberId = (Long) request.getSession().getAttribute("memberId");
     	
-    	if (member==null) {
+    	if (memberId==null) {
         	request.setAttribute("alertMsg", "해당 메뉴는 회원만 이용 가능합니다. 로그인 후 이용하세요.");
             contentPage = "/WEB-INF/views/auth/login.jsp";
     	} else {
-    		List<HoldingDTO> holdingList = holdingService.getAllHoldings(member.getMemberId());
+    		List<HoldingDTO> holdingList = holdingService.getAllHoldings(memberId);
     		request.setAttribute("holdingList", holdingList);
     	}
     	

@@ -29,7 +29,7 @@
         <nav class="space-x-4">
             <%-- 로그인 상태에 따라 다른 메뉴 표시 --%>
             <c:choose>
-                <c:when test="${not empty sessionScope.member}">
+                <c:when test="${not empty sessionScope.memberId}">
 		            <a href="${pageContext.request.contextPath}/stock" class="text-gray-600 hover:text-blue-600 font-medium">주식 시장</a>
 		            <a href="${pageContext.request.contextPath}/bank" class="text-gray-600 hover:text-blue-600 font-medium">은행 상품</a>
 		            <a href="${pageContext.request.contextPath}/holdings" class="text-gray-600 hover:text-blue-600 font-medium">보유 자산</a>

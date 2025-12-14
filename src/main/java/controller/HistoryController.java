@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import dto.HistoryDTO;
 import dto.MemberDTO;
 import service.HistoryService;
+import service.MemberService;
 
 /**
  * Servlet implementation class HistoryController
@@ -22,18 +23,20 @@ import service.HistoryService;
 public class HistoryController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	HistoryService historyService = new HistoryService();
+	MemberService memberService = new MemberService();
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		String pathInfo = request.getPathInfo();
         String contentPage = "/WEB-INF/views/history/history.jsp";
-    	MemberDTO member = (MemberDTO) request.getSession().getAttribute("member");
+    	Long memberId = (Long) request.getSession().getAttribute("memberId");
     	Gson gson = new Gson();
 		String historyListJson;
     	
-    	if (member==null) {
+    	if (memberId==null) {
         	request.setAttribute("alertMsg", "해당 메뉴는 회원만 이용 가능합니다. 로그인 후 이용하세요.");
             contentPage = "/WEB-INF/views/auth/login.jsp";
     	} else {
+    		MemberDTO member = memberService.refresh(memberId);
             List<HistoryDTO> historyList = historyService.loadHistory(member);
             historyList.sort((HistoryDTO a, HistoryDTO b)->a.getRecordDate().compareTo(b.getRecordDate()));
             try {
