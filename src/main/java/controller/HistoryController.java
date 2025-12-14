@@ -35,6 +35,7 @@ public class HistoryController extends HttpServlet {
             contentPage = "/WEB-INF/views/auth/login.jsp";
     	} else {
             List<HistoryDTO> historyList = historyService.loadHistory(member);
+            historyList.sort((HistoryDTO a, HistoryDTO b)->a.getRecordDate().compareTo(b.getRecordDate()));
             try {
                 // Timestamp가 포함되어 있으므로 날짜 포맷팅 관련 처리가 필요할 수 있습니다.
                 // 일단 기본 설정으로 변환합니다.
