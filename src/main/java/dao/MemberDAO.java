@@ -61,6 +61,7 @@ public class MemberDAO {
                 member.setMemberId(rs.getLong("MEMBER_ID"));
                 member.setName(rs.getString("NAME"));
                 member.setCash(rs.getBigDecimal("CASH"));
+                member.setEmail(rs.getString("EMAIL"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -98,5 +99,33 @@ public class MemberDAO {
         }
 		
 		return member;
+	}
+
+	public Long changePw(Long memberId, String currentPassword, String newPassword) {
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        Long result = 0L;
+        
+        try {
+            conn = DBUtil.dbConnect();
+            String sql = """
+update members
+set password=?
+where member_id=? and password=?
+""";
+            pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newPassword);
+            pstmt.setLong(2, memberId);
+            pstmt.setString(3, currentPassword);
+            result = (long) pstmt.executeUpdate();
+        	
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.dbDisconnect(conn, pstmt, rs);
+        }
+		
+		return result;
 	}
 }
