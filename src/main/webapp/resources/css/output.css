@@ -347,6 +347,12 @@
   .mt-10 {
     margin-top: calc(var(--spacing) * 10);
   }
+  .mt-12 {
+    margin-top: calc(var(--spacing) * 12);
+  }
+  .mt-16 {
+    margin-top: calc(var(--spacing) * 16);
+  }
   .mt-\[48px\] {
     margin-top: 48px;
   }
@@ -439,6 +445,9 @@
   }
   .h-full {
     height: 100%;
+  }
+  .h-screen {
+    height: 100vh;
   }
   .min-h-screen {
     min-height: 100vh;
@@ -791,6 +800,9 @@
   .bg-green-600 {
     background-color: var(--color-green-600);
   }
+  .bg-indigo-50 {
+    background-color: var(--color-indigo-50);
+  }
   .bg-indigo-600 {
     background-color: var(--color-indigo-600);
   }
@@ -1064,6 +1076,15 @@
   }
   .text-indigo-600 {
     color: var(--color-indigo-600);
+  }
+  .text-indigo-700 {
+    color: var(--color-indigo-700);
+  }
+  .text-indigo-800 {
+    color: var(--color-indigo-800);
+  }
+  .text-indigo-900 {
+    color: var(--color-indigo-900);
   }
   .text-red-500 {
     color: var(--color-red-500);
