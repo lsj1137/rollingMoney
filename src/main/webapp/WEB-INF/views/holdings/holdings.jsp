@@ -3,7 +3,10 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="path" value="${pageContext.request.contextPath}" />
-
+<c:set var="totalAssetAmount" value="${cash}" />
+<c:forEach var="holding" items="${holdingList}">
+    <c:set var="totalAssetAmount" value="${totalAssetAmount + holding.buyAmount}" />
+</c:forEach>
 <div class="min-h-screen p-4 sm:p-8">
     <div class="max-w-7xl mx-auto">
 
@@ -11,13 +14,16 @@
             보유 자산 목록
         </h1>
 
-        <div class="mb-8 p-6 bg-blue-50 rounded-xl shadow-md border-l-4 border-blue-600">
-            <p class="text-lg font-semibold text-blue-800">
-                현재 총 <span class="text-2xl font-extrabold">${fn:length(holdingList)}</span>개의 자산을 보유하고 있습니다.
+        <div class="mb-8 p-6 bg-blue-50 rounded-xl shadow-md border-l-4 border-blue-600 flex justify-between items-end">
+        <p class="text-lg font-semibold text-blue-800">
+            현재 총 <span class="text-2xl font-extrabold">${fn:length(holdingList)+1}</span>개의 자산을 보유하고 있습니다.
+        </p>
+        <div class="text-right">
+            <p class="text-xl font-semibold text-gray-800">총 자산 합계</p>
+            <p class="text-4xl font-extrabold text-gray-700 mt-1">
+                <fmt:formatNumber value="${totalAssetAmount}" pattern="#,###원"/>
             </p>
-            <p class="text-sm text-blue-600 mt-1">
-                (매입 금액 기준으로 계산된 자산입니다.)
-            </p>
+        </div>
         </div>
 
         <div class="bg-white shadow-xl rounded-xl overflow-hidden">
@@ -51,6 +57,21 @@
                     </thead>
                     
                     <tbody class="bg-white divide-y divide-gray-200">
+                    	<tr>
+                    	<td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    		<span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">현금</span>
+                    	</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">현금</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                        --
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">--</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        <fmt:formatNumber value="${cash}" pattern="#,##0"/>원
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">해당없음</td>
+                    	<td class="px-6 py-4 whitespace-nowrap text-center text-sm font-medium">불가</td>
+                    	</tr>
                         <c:choose>
                             <c:when test="${not empty holdingList}">
                                 <c:forEach var="holding" items="${holdingList}">
@@ -95,7 +116,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
                                             <c:choose>
                                                 <c:when test="${holding.productType eq 'STOCK'}">
-                                                    <fmt:formatNumber value="${holding.buyPrice}" type="currency" currencyCode="KRW" pattern="#,##0원"/> (단가)
+                                                    <fmt:formatNumber value="${holding.buyAmount}" type="currency" currencyCode="KRW" pattern="#,##0원"/>
                                                 </c:when>
                                                 <c:otherwise>
                                                     ---
