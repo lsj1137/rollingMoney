@@ -12,13 +12,14 @@ import api.KisApiManager;
 import dao.StockDAO;
 import dto.HoldingDTO;
 import dto.StockDTO;
+import util.ThreadPoolManager;
 
 public class StockService {
 	private final KisApiManager kisApiManager = new KisApiManager();
 	private final StockDAO stockDAO = new StockDAO();
 	
 	// 스레드 풀 생성 (CPU 코어 수의 2배 정도가 적절하며, 여기서는 네트워크 대기시간을 고려하여 넉넉히 10개로 설정)
-    private final ExecutorService executorService = Executors.newFixedThreadPool(10);
+    private final ExecutorService executorService = ThreadPoolManager.getExecutorService();
 	
 	// KIS API를 통해 현재가를 조회하고, DB에 저장(혹은 갱신)하는 메서드
     public StockDTO registerStockWithKis(String token, String ticker, String stockName, String category) {
@@ -115,11 +116,5 @@ public class StockService {
 	    // 전체 데이터 개수 카운트 DAO 호출
 	    return stockDAO.countTotalStocks(subCategory);
 	}
-	
-	public void shutdownExecutor() {
-        executorService.shutdown();
-    }
-
-
 	
 }
