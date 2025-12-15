@@ -40,4 +40,8 @@ public class MemberService {
 		return memberDAO.getMemberById(memberId);
 	}
 
+	public Long changePw(Long memberId, String currentPassword, String newPassword) {
+		return memberDAO.changePw(memberId, currentPassword, newPassword);
+	}
+
 }

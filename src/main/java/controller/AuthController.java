@@ -13,33 +13,54 @@ import service.MemberService;
 /**
  * Servlet implementation class MemberServlet
  */
-@WebServlet("/auth")
+@WebServlet("/auth/*")
 public class AuthController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
    
 	
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
-        
-        String action = request.getParameter("action");
+
+		String pathInfo = request.getPathInfo();
     	Long memberId = (Long) request.getSession().getAttribute("memberId");
         String contentPage = "";
         
-        if (action == null || action.equals("showLogin")) {
+        if (pathInfo == null || pathInfo.equals("/login")) {
         	if (memberId == null) {
-                // 기본 또는 showLogin 요청 시 로그인 페이지로 이동
             	contentPage = "/WEB-INF/views/auth/login.jsp";
         	} else {
         		contentPage = "/WEB-INF/views/index.jsp";
         	}
-        } else if (action.equals("showRegister")) {
+        } else if (pathInfo.equals("/register")) {
             // 회원가입 페이지 요청 시
         	contentPage = "/WEB-INF/views/auth/register.jsp";
-        } else if (action.equals("logout")) {
-            request.getSession().setAttribute("memberId", null);
-        	contentPage = "/WEB-INF/views/index.jsp";
+        } else if (pathInfo.equals("/logout")) {
+            request.getSession().removeAttribute("memberId");
+        	response.sendRedirect("/rollingMoney");
+        	return;
+        } else if (pathInfo.equals("/mypage")) {
+        	if (memberId == null) {
+            	contentPage = "/WEB-INF/views/auth/login.jsp";
+        	} else {
+                String alertMsg = (String) request.getSession().getAttribute("alertMsg");
+                if (alertMsg != null) {
+                	request.setAttribute("alertMsg", alertMsg);
+                	request.getSession().removeAttribute("alertMsg");
+                }
+        		MemberDTO memberInfo = new MemberService().refresh(memberId);
+                request.setAttribute("memberInfo", memberInfo);
+            	contentPage = "/WEB-INF/views/auth/mypage.jsp";
+        	}
+        } else if (pathInfo.equals("/mypage/security")) {
+        	if (memberId == null) {
+            	contentPage = "/WEB-INF/views/auth/login.jsp";
+        	} else {
+        		MemberDTO memberInfo = new MemberService().refresh(memberId);
+                request.setAttribute("memberInfo", memberInfo);
+            	contentPage = "/WEB-INF/views/auth/changepw.jsp";
+        	}
         }
-
+        
         request.setAttribute("contentPage", contentPage);
         request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
     }
@@ -48,12 +69,12 @@ public class AuthController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
     	request.setCharacterEncoding("utf-8");
-        
-        String action = request.getParameter("action");
+
+		String pathInfo = request.getPathInfo();
         String contentPage = "";
         
         
-        if (action.equals("login")) {
+        if (pathInfo.equals("/login")) {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             
@@ -69,10 +90,8 @@ public class AuthController extends HttpServlet {
                 request.setAttribute("errorMsg", "이메일 또는 비밀번호가 올바르지 않습니다.");
                 contentPage = "/WEB-INF/views/auth/login.jsp"; 
             }
-            request.setAttribute("contentPage", contentPage);
-            request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
             
-        } else if (action.equals("register")) {
+        } else if (pathInfo.equals("/register")) {
             // 회원가입 처리 로직
             String name = request.getParameter("name");
             String email = request.getParameter("email");
@@ -95,9 +114,24 @@ public class AuthController extends HttpServlet {
                 request.setAttribute("alertMsg", "회원가입이 완료되었습니다! 로그인하고 이용하세요.");
             	contentPage = "/WEB-INF/views/auth/login.jsp";
             }
-            request.setAttribute("contentPage", contentPage);
-            request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
+        } else if (pathInfo.equals("/mypage/security")) {
+            Long memberId = (Long) request.getSession().getAttribute("memberId");
+            String currentPassword = request.getParameter("currentPassword");
+            String newPassword = request.getParameter("newPassword");
+            Long result = new MemberService().changePw(memberId, currentPassword, newPassword);
+            if (result<0) {
+            	String errorMsg =  "비밀번호 변경에 실패했습니다.";
+                request.setAttribute("errorMsg", errorMsg);
+            } else {
+                request.getSession().setAttribute("alertMsg", "비밀번호 변경이 완료되었습니다!");
+                response.sendRedirect("/rollingMoney/auth/mypage");
+                return;
+            }
         }
+        
+        
+        request.setAttribute("contentPage", contentPage);
+        request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
     }
 
 }

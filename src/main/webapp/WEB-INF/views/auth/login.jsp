@@ -5,7 +5,7 @@
     <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
         <h2 class="text-3xl font-bold text-center text-gray-900">로그인</h2>
 
-        <form action="${pageContext.request.contextPath}/auth?action=login" method="POST" class="space-y-6">
+        <form action="${pageContext.request.contextPath}/auth/login" method="POST" class="space-y-6">
             <input type="hidden" name="action" value="login">
             
             <div>
@@ -31,7 +31,7 @@
 
         <p class="text-center text-sm text-gray-600">
             계정이 없으신가요? 
-            <a href="${pageContext.request.contextPath}/auth?action=showRegister" class="font-medium text-blue-600 hover:text-blue-500">회원가입</a>
+            <a href="${pageContext.request.contextPath}/auth/register" class="font-medium text-blue-600 hover:text-blue-500">회원가입</a>
         </p>
     </div>
 </div>

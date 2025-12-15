@@ -7,7 +7,7 @@
     <div class="w-full max-w-md p-8 space-y-6 bg-white rounded-xl shadow-lg">
         <h2 class="text-3xl font-bold text-center text-gray-900">회원가입</h2>
 
-        <form action="${pageContext.request.contextPath}/auth?action=register" method="POST" class="space-y-6">
+        <form action="${pageContext.request.contextPath}/auth/register" method="POST" class="space-y-6">
             <input type="hidden" name="action" value="register">
 
             <div>

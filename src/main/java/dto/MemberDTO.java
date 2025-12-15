@@ -16,4 +16,5 @@ public class MemberDTO {
 	private Long memberId;
 	private String name;
 	private BigDecimal cash;
+	private String email;
 }
