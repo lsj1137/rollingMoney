@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import dto.HoldingDTO;
 import dto.MemberDTO;
 import service.HoldingService;
+import service.MemberService;
 
 @WebServlet("/holdings")
 public class HoldingsController extends HttpServlet {
@@ -31,6 +32,8 @@ public class HoldingsController extends HttpServlet {
     			request.setAttribute("alertMsg", alertMsg);
     			request.getSession().removeAttribute("alertMsg");;
     		}
+    		MemberDTO member = new MemberService().refresh(memberId);
+    		request.setAttribute("cash", member.getCash());
     		List<HoldingDTO> holdingList = holdingService.getAllHoldings(memberId);
     		request.setAttribute("holdingList", holdingList);
     	}
