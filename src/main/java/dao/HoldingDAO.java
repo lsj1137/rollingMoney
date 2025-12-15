@@ -66,7 +66,7 @@ WHERE HOLDING_ID = ?
 static final String SQL_SELECT_WITH_PID = """
 select *
 from HOLDINGS
-where PRODUCT_ID = ?
+where MEMBER_ID=? AND PRODUCT_ID = ?
 """;
 
 	private HoldingDTO makeHolding(ResultSet rs) throws SQLException {
@@ -259,8 +259,11 @@ where PRODUCT_ID = ?
  
 			updateStmt2 = conn.prepareStatement(SQL_UPDATE_CASH);
 			BigDecimal curCash = member.getCash();
+			System.out.println("1>> "+curCash);
 			BigDecimal amount = stock.getCurPrice().multiply(new BigDecimal(quantity));
+			System.out.println("2>> "+amount);
 			BigDecimal newCash = curCash.add(amount);
+			System.out.println("3>> "+newCash);
 			updateStmt2.setBigDecimal(1, newCash);
 			updateStmt2.setLong(2, member.getMemberId());
 			int result2 = updateStmt2.executeUpdate();
@@ -288,7 +291,7 @@ where PRODUCT_ID = ?
 		return resultCode;
 	}
 
-	public HoldingDTO getHoldingByPid(Long productId) {
+	public HoldingDTO getHoldingByPid(Long memberId, Long productId) {
 		Connection conn = null;
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -297,7 +300,8 @@ where PRODUCT_ID = ?
         try {
             conn = DBUtil.dbConnect();
             pstmt = conn.prepareStatement(SQL_SELECT_WITH_PID);
-            pstmt.setLong(1, productId);
+            pstmt.setLong(1, memberId);
+            pstmt.setLong(2, productId);
             rs = pstmt.executeQuery();
 			while (rs.next()) {
 				holdingDTO = makeHolding(rs);

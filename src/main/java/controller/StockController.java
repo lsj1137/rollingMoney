@@ -64,7 +64,7 @@ public class StockController extends HttpServlet {
         	    	request.setAttribute("alertMsg", "조회된 종목이 없습니다.");
         	    	contentPage = "/WEB-INF/views/stock/list.jsp";
         	    } else {
-        	    	HoldingDTO holdingDTO = holdingService.getHoldingByPid(stockDTO.getProductId());
+        	    	HoldingDTO holdingDTO = holdingService.getHoldingByPid(member.getMemberId(), stockDTO.getProductId());
             	    request.setAttribute("member", member);
             	    request.setAttribute("stock", stockDTO);
             	    request.getSession().setAttribute("stock", stockDTO);
@@ -94,8 +94,6 @@ public class StockController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	request.setCharacterEncoding("utf-8");
 		String pathInfo = request.getPathInfo();
-		String contentPage = "";
-		System.out.println(pathInfo);
     	Long memberId = (Long) request.getSession().getAttribute("memberId");
     	MemberDTO member = new MemberService().refresh(memberId);
     	StockDTO stock = (StockDTO) request.getSession().getAttribute("stock");
@@ -103,22 +101,19 @@ public class StockController extends HttpServlet {
 		if (pathInfo.equals("/buy")) {
 			String quantity = request.getParameter("quantity");
 			String result = buyStock(member, stock, Integer.parseInt(quantity));
-			request.setAttribute("alertMsg", result);
-    	    request.getSession().setAttribute("stock", null);
-    	    request.getSession().setAttribute("holding", null);
-			contentPage = "/WEB-INF/views/holdings/holdings.jsp";
+    	    request.getSession().setAttribute("alertMsg", result);
+    	    request.getSession().removeAttribute("stock");
+    	    request.getSession().removeAttribute("holding");
 		} else if (pathInfo.equals("/sell")) {
 	    	HoldingDTO holding = (HoldingDTO) request.getSession().getAttribute("holding");
 			String quantity = request.getParameter("quantity");
 			String result = sellStock(member, stock, holding, Integer.parseInt(quantity));
-			request.setAttribute("alertMsg", result);
-    	    request.getSession().setAttribute("stock", null);
-    	    request.getSession().setAttribute("holding", null);
-			contentPage = "/WEB-INF/views/holdings/holdings.jsp";
+    	    request.getSession().setAttribute("alertMsg", result);
+    	    request.getSession().removeAttribute("stock");
+    	    request.getSession().removeAttribute("holding");
 		}
 		
-        request.setAttribute("contentPage", contentPage);
-        request.getRequestDispatcher("/WEB-INF/views/layout/main_layout.jsp").forward(request, response);
+        response.sendRedirect("/rollingMoney/holdings");
 	}
 
 	// 한국/미국 주식 전체 조회
@@ -184,6 +179,7 @@ public class StockController extends HttpServlet {
 		String message = "알 수 없는 에러가 발생했습니다.";
 		if (result>0) {
 			message = "✅ 매도 체결되었습니다.";
+			member = new MemberService().refresh(member.getMemberId());
 			historyService.insertHistory(member, "sell", stock.getProductName());
 		} else {
 			message = "❌ 매도에 실패했습니다";

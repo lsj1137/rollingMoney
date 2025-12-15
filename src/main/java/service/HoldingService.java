@@ -26,8 +26,8 @@ public class HoldingService {
 		return holdingDAO.sellStock(member, stockToSell, holdingToSell, quantity);
 	}
 
-	public HoldingDTO getHoldingByPid(Long productId) {
-		return holdingDAO.getHoldingByPid(productId);
+	public HoldingDTO getHoldingByPid(Long memberId, Long productId) {
+		return holdingDAO.getHoldingByPid(memberId, productId);
 	}
 	
 }

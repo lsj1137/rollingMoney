@@ -26,6 +26,11 @@ public class HoldingsController extends HttpServlet {
         	request.setAttribute("alertMsg", "해당 메뉴는 회원만 이용 가능합니다. 로그인 후 이용하세요.");
             contentPage = "/WEB-INF/views/auth/login.jsp";
     	} else {
+    		String alertMsg = (String) request.getSession().getAttribute("alertMsg");
+    		if (alertMsg != null) {
+    			request.setAttribute("alertMsg", alertMsg);
+    			request.getSession().removeAttribute("alertMsg");;
+    		}
     		List<HoldingDTO> holdingList = holdingService.getAllHoldings(memberId);
     		request.setAttribute("holdingList", holdingList);
     	}
