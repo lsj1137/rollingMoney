@@ -31,10 +31,10 @@
             <%-- 로그인 상태에 따라 다른 메뉴 표시 --%>
             <c:choose>
                 <c:when test="${not empty sessionScope.memberId}">
-		            <a href="${path}/stock" class="text-gray-600 hover:text-blue-600 font-medium">주식 시장</a>
-		            <a href="${path}/bank" class="text-gray-600 hover:text-blue-600 font-medium">은행 상품</a>
-		            <a href="${path}/holdings" class="text-gray-600 hover:text-blue-600 font-medium">보유 자산</a>
-		            <a href="${path}/history" class="text-gray-600 hover:text-blue-600 font-medium">자산 기록</a>
+		            <a href="${path}/stock" class="text-gray-600 hover:text-blue-600 font-medium btn-loading">주식 시장</a>
+		            <a href="${path}/bank" class="text-gray-600 hover:text-blue-600 font-medium btn-loading">은행 상품</a>
+		            <a href="${path}/holdings" class="text-gray-600 hover:text-blue-600 font-medium btn-loading">보유 자산</a>
+		            <a href="${path}/history" class="text-gray-600 hover:text-blue-600 font-medium btn-loading">자산 기록</a>
 		            <div class="relative group">
                         
                         <button class="flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors focus:outline-none" 

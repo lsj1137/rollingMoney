@@ -9,7 +9,7 @@
         주식 시장 목록
     </h2>
 
-    <div class="flex space-x-4 border-b border-blue-500 mb-6 text-lg">
+    <div class="flex space-x-4 border-b border-blue-500 mb-6 text-lg btn-loading">
         <a href="${path}/stock/list/kor" 
            class="pb-2 px-3 <c:if test='${category eq "kor"}'>text-blue-600 border-b-2 border-blue-600 font-semibold</c:if>">
             한국 주식
@@ -35,7 +35,7 @@
 	        <c:choose>
 	            <c:when test="${not empty stocklist}">
 	                <c:forEach var="stock" items="${stocklist}" varStatus="status">
-	                    <div class="bg-white rounded-xl shadow-custom hover:shadow-custom-hover transition-all duration-100 p-6 flex flex-col justify-between">
+	                    <div class=" btn-loading bg-white rounded-xl shadow-custom hover:shadow-custom-hover transition-all duration-100 p-6 flex flex-col justify-between">
 	                        <div class="mb-4">
 	                            <h3 class="text-xl font-bold text-gray-900 truncate">
 	                                <a href="${path}/stock/detail?id=${stock.productId}" class="hover:text-blue-600">
@@ -69,7 +69,7 @@
 	
 <%-- /WEB-INF/views/stock/list.jsp 의 페이지네이션 영역 --%>
 
-	<div class="mt-10 flex w-full items-center justify-center">
+	<div class="mt-10 flex w-full items-center justify-center  btn-loading">
 	    <div class="flex space-x-0"> 
 	        
 	        <%-- 맨 처음 버튼 --%>

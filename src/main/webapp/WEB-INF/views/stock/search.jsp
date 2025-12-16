@@ -44,11 +44,11 @@
                 총 ${fn:length(searchResults)} 건 검색됨
             </h3>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"> 
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 "> 
                 <c:choose>
                     <c:when test="${not empty searchResults}">
                         <c:forEach var="stock" items="${searchResults}" varStatus="status">
-                            <div class="bg-white rounded-xl shadow-custom hover:shadow-custom-hover transition duration-100 p-6 flex flex-col justify-between">
+                            <div class="btn-loading bg-white rounded-xl shadow-custom hover:shadow-custom-hover transition duration-100 p-6 flex flex-col justify-between">
                                 <div class="mb-4">
                                     <h3 class="text-xl font-bold text-gray-900 truncate">
                                         <a href="${path}/stock/detail?id=${stock.productId}" class="hover:text-blue-600">
